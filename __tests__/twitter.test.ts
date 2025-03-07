@@ -9,7 +9,7 @@ const loadTwitterSearchResponse = async () => {
 
 test("Twitter response parse", async () => {
   const twitterSearchResponse = await loadTwitterSearchResponse();
-  const selectedPositions = parseTweetResponseToOrders(twitterSearchResponse);
+  const selectedPositions = await parseTweetResponseToOrders(twitterSearchResponse);
   expect(selectedPositions).toEqual([
       {
         addressTip: "thor1ld30uyy5zz023ydqfjn84gmw76h9gsfyp46607",

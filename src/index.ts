@@ -19,9 +19,10 @@ async function merchantWork() {
   for (const position of suggestedPositions) {
     await marketOrder(position.ticker +  '-PERP', mapSizeDollars[position.size], position.direction === 'long' ? true : false)
     // 4) Configure Timeouts to close positions depending on provided horizon
+    const timeToDelay = mapHorizonMilliseconds[position.horizon]
     setTimeout(async () => {
       await closePosition(position.ticker +  '-PERP')
-    }, mapHorizonMilliseconds[position.horizon]); // TODO use correct parametrization for cloaseDelay
+    }, timeToDelay); // TODO use correct parametrization for cloaseDelay
     // 5) TODO: Send tip to user in case of positive returns
   }
 }

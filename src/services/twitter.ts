@@ -14,21 +14,22 @@ export async function searchTweetsByHashtag(): Promise<TwitterSearchResponse> {
     return twitterFakeResponse
 }
 
-export function parseTweetResponseToOrders(search: TwitterSearchResponse): MerchantPosition[] {
+export async function parseTweetResponseToOrders(search: TwitterSearchResponse): Promise<MerchantPosition[]> {
     const tweets = search.data
     const parsedOrders: MerchantPosition[] = []
-    tweets.forEach(tweet => {
+    const promises = tweets.map(async tweet => {
         try {
-            const order = parseTweetContent(tweet.text)
+            const order = await parseTweetContent(tweet.text)
             parsedOrders.push(order)
         } catch (e) {
             console.error('Invalid tweet', tweet.text, e)
         }
     })
+    await Promise.all(promises)
     return parsedOrders
 }
 
-export function parseTweetContent(tweetContent: string): MerchantPosition {
+export async function parseTweetContent(tweetContent: string): Promise<MerchantPosition> {
   const regex =
     /Ticker:\s*\$(?<ticker>\w+)\s*Direction:\s*(?<direction>short|long)\s*Size:\s*(?<size>small|medium|large)\s*Time horizon:\s*(?<horizon>8h|16h|24h)\s*Tip:\s*(?<addressTip>\w+)/i;
 
@@ -41,7 +42,7 @@ export function parseTweetContent(tweetContent: string): MerchantPosition {
   }
 
   const ticker = match.groups.ticker.replace('$', '')
-  const assetIndex = getAssetIndex(ticker)
+  const assetIndex = await getAssetIndex(`${ticker}-PERP`)
   
   if (assetIndex === undefined) {
     throw new Error(`Invalid asset not found ${ticker}`)

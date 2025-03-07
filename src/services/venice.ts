@@ -14,7 +14,7 @@ const client = new OpenAI.OpenAI({
 const getPromp = (orders: MerchantPosition[]) => {
     // TODO: Translate to english
     return `
-        Seleciona un número ${process.env.NUMBER_OF_ORDERS_TO_OPEN} de orden/es que consideres más rentables de la siguiente lista de ordenes de trading: 
+        Seleciona un número ${process.env.NUMBER_OF_ORDERS_TO_OPEN || 1} de orden/es que consideres más rentables de la siguiente lista de ordenes de trading: 
 
         ${orders.map(order => (`Ticker: ${order.ticker}\nDirection: ${order.direction}\nSize: ${order.size}\nTime horizon: ${order.horizon}\nTip: ${order.addressTip}`))}
 
@@ -25,7 +25,7 @@ const getPromp = (orders: MerchantPosition[]) => {
                 "ticker": "RUNE",
                 "direction": "short",
                 "size": "medium",
-                "time horizon": "8h",
+                "horizon": "8h",
                 "tip": "thor1ld30uyy5zz023ydqfjn84gmw76h9gsfyp46607"
             }
         ]
