@@ -1,0 +1,35 @@
+{
+  "name": "the-merchant-of-venice",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.9",
+    "@types/node-cron": "^3.0.11",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "hyperliquid": "^1.6.2",
+    "node-cron": "^3.0.3",
+    "openai": "^4.86.2",
+    "twitter-api-sdk": "^1.2.1",
+    "viem": "^2.23.6",
+    "ws": "^8.18.1"
+  }
+}
