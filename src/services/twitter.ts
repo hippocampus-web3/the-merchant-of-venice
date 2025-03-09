@@ -1,18 +1,59 @@
 import { MerchantPosition, TwitterSearchResponse } from "../types.js";
 
-import { readFile } from 'fs/promises';
+// import { readFile } from 'fs/promises';
 import { getAssetIndex } from "./hyperliquid.js";
+import axios from "axios";
 
-const loadTwitterSearchResponse = async () => {
-  const rawData = await readFile('./src/tests/twitter-response.json', 'utf-8');
-  return JSON.parse(rawData);
-};
+// const loadTwitterSearchResponse = async () => {
+//   const rawData = await readFile('./src/tests/twitter-response.json', 'utf-8');
+//   return JSON.parse(rawData);
+// };
 
 export async function searchTweetsByHashtag(): Promise<TwitterSearchResponse> {
-    const twitterFakeResponse = await loadTwitterSearchResponse() // TODO: Implement real search
-    console.debug('Twitter search response', twitterFakeResponse)
-    return twitterFakeResponse
+  const nowUtc = new Date();
+  const startDate = new Date(nowUtc.getTime() - 24 * 60 * 60 * 1000);
+
+  const startDateStr = startDate.toISOString();
+  const endDateStr = nowUtc.toISOString();
+
+  const url = "https://api.twitter.com/2/tweets/search/recent";
+  
+  const params = {
+    start_time: startDateStr,
+    end_time: endDateStr,
+    max_results: 10,
+    query: '#veniceTrader',
+  };
+
+  const headers = {
+    Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
+    "Content-Type": "application/json",
+  };
+
+  let response = null
+
+  try {
+    response = await axios.get(url, { params, headers });
+  } catch (e) {
+    console.error('Error fetching tweets', e)
+    throw new Error('Error fetching tweets')
+  }
+
+  const tweetResponse: TwitterSearchResponse = response.data;
+
+  console.log('response', response.data)
+
+  if (tweetResponse.meta.result_count <= 0) {
+    throw new Error('No tweets found in last 24h')
+  }
+
+  return tweetResponse;
 }
+
+//   const twitterFakeResponse = await loadTwitterSearchResponse() // TODO: Implement real search
+//   console.debug('Twitter search response', twitterFakeResponse)
+//   return twitterFakeResponse
+// }
 
 export async function parseTweetResponseToOrders(search: TwitterSearchResponse): Promise<MerchantPosition[]> {
     const tweets = search.data
