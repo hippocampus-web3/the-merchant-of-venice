@@ -8,7 +8,7 @@ import { mapHorizonMilliseconds, mapSizeDollars } from "./constants.js";
 dotenv.config();
 
 async function merchantWork() {
-  console.log("📅 Executing merchant work...", );
+  console.log(`${Date.now()} Executing merchant work...`);
   // 1) Get all tweets from last 24h
   const ordersFromTwitter = await getOrdersFromTwitterLast24hWithHastagh()
 
@@ -27,7 +27,10 @@ async function merchantWork() {
   }
 }
 
-await merchantWork()
+// try {
+//   await merchantWork()
+// } catch(e) {}
+
 
 cron.schedule("0 0 * * *", async () => {
   await merchantWork()

@@ -14,7 +14,7 @@ export async function searchTweetsByHashtag(): Promise<TwitterSearchResponse> {
   const startDate = new Date(nowUtc.getTime() - 24 * 60 * 60 * 1000);
 
   const startDateStr = startDate.toISOString();
-  const endDateStr = nowUtc.toISOString();
+  const endDateStr = new Date(nowUtc.getTime() - 45000); // Twitter API need a delay for end date
 
   const url = "https://api.twitter.com/2/tweets/search/recent";
   
@@ -35,6 +35,9 @@ export async function searchTweetsByHashtag(): Promise<TwitterSearchResponse> {
   try {
     response = await axios.get(url, { params, headers });
   } catch (error: any) {
+    if (error?.response && error?.response.data && error?.response.data.detail) {
+      console.error("Twitter API Error:", error?.response.data.detail);
+    }
     if (error?.response && error?.response.data && error?.response.data.errors) {
       console.error("Twitter API Error:", JSON.stringify(error?.response.data.errors, null, 2));
     }
