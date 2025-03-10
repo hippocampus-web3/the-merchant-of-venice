@@ -34,8 +34,10 @@ export async function searchTweetsByHashtag(): Promise<TwitterSearchResponse> {
 
   try {
     response = await axios.get(url, { params, headers });
-  } catch (e) {
-    console.error('Error fetching tweets', e)
+  } catch (error: any) {
+    if (error?.response && error?.response.data && error?.response.data.errors) {
+      console.error("Twitter API Error:", JSON.stringify(error?.response.data.errors, null, 2));
+    }
     throw new Error('Error fetching tweets')
   }
 

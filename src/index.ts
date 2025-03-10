@@ -27,7 +27,7 @@ async function merchantWork() {
   }
 }
 
-// await merchantWork()
+await merchantWork()
 
 cron.schedule("0 0 * * *", async () => {
   await merchantWork()
