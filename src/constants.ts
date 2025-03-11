@@ -5,7 +5,7 @@ export const mapHorizonMilliseconds = {
 }
 
 export const mapSizePercentage = {
-    'small': 0.1, // 10%
-    'medium': 0.2, // 20%
-    'large': 0.3, // 30%
+    'small': 1, // 100%
+    'medium': 2, // 200%
+    'large': 3, // 300%
 }
