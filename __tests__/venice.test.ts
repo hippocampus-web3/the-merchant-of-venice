@@ -16,22 +16,19 @@ test('Venice response parse', async () => {
       "Ticker": "$ATOM",
       "Dirección": "long",
       "Tamaño": "large",
-      "Horizonte de tiempo": "24h",
-      "Tip": "atom1dzpxcslkjm9yp5m6hh6wpt3x2f8xvzq4yk7q6c"
+      "Horizonte de tiempo": "20h",
     },
     {
       "Ticker": "$SHIB",
       "Dirección": "long",
       "Tamaño": "large",
-      "Horizonte de tiempo": "24h",
-      "Tip": "shib1ksv2p7yq4djg58hrwl9x6ypztn9mch8fy83d5q"
+      "Horizonte de tiempo": "20h",
     },
     {
       "Ticker": "$NEAR",
       "Dirección": "long",
       "Tamaño": "large",
-      "Horizonte de tiempo": "24h",
-      "Tip": "near1ztgk4pxq8jydmvw7x5k3n9cylm5j6xr9qgpyld"
+      "Horizonte de tiempo": "20h",
     }
   ]);
 });

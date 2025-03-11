@@ -7,24 +7,17 @@ const sdk = new Hyperliquid({
     enableWs: false,
     privateKey: process.env.PRIVATE_KEY,
     testnet: false,
+    vaultAddress: process.env.VAULT_ADDRESS,
 });
   
-export async function getCurrentMerchantPositions() {
-    await sdk.connect(); // TODO: Fix problem with recurrent connect
-    sdk.info.perpetuals.getClearinghouseState('0xdE9f2CdE3dfF96CBb12a573B7043E7C14a42BeF6').then(clearinghouseState => {
-        console.log(clearinghouseState);
-      }).catch(error => {
-        console.error('Error getting clearinghouse state:', error);
-      });
+async function getCurrentMerchantPositions(address: string) {
+  await sdk.connect(); // TODO: Fix problem with recurrent connect
+  return  sdk.info.perpetuals.getClearinghouseState(address)
 } 
 
-export async function getMerchantPerpetualAccountSummary() {
-  await sdk.connect();
-  sdk.info.perpetuals.getClearinghouseState('0xdE9f2CdE3dfF96CBb12a573B7043E7C14a42BeF6').then(clearinghouseState => {
-    console.log(clearinghouseState);
-  }).catch(error => {
-    console.error('Error getting clearinghouse state:', error);
-  });
+export async function getVaultUsdValue (address: string) {
+  const result = await getCurrentMerchantPositions(address)
+  return result.crossMarginSummary.accountValue
 }
 
 export async function getAssetIndex(asset: string) {
@@ -45,21 +38,6 @@ export async function getAssetMarketPrice(asset: string) {
   return { price: Number(currentPrice), perpDecimals }
 }
 
-// export async function placeOrder(coin, sizeInUsd) {
-//     await sdk.connect();
-//     const marketPrice = await getAssetMarketPrice(coin)
-//     const orderResponse = await sdk.exchange.placeOrder({
-//         coin,
-//         is_buy: true,
-//         sz: 15,
-//         limit_px: marketPrice, // Decrease to insta fill
-//         order_type: { limit: { tif: 'Ioc' } },
-//         reduce_only: false,
-//       })
-//     console.log(orderResponse);
-//     return '' // Order Id
-// }
-
 async function getCoinSize(coin: string, sizeInUsd: number) {
   const { price, perpDecimals } = await getAssetMarketPrice(coin)
   const assetAmount = sizeInUsd / price
@@ -75,6 +53,9 @@ export async function marketOrder (coin: string, sizeInUsd: number, isBuy: boole
     isBuy,
     coinSize,
   )
+  if ((orderResponse.response.data.statuses[0] as any)?.error) {
+    console.error('Order error: ', (orderResponse.response.data.statuses[0] as any)?.error)
+  }
   console.info('Open market position:', orderResponse.response.data.statuses[0].filled)
   return orderResponse
 }

@@ -8,8 +8,7 @@ export type MerchantPosition = {
   ticker: string;
   direction: "short" | "long";
   size: "small" | "medium" | "large";
-  horizon: "8h" | "16h" | "24h";
-  addressTip: string;
+  horizon: "8h" | "16h" | "20h";
 };
 
 export type VeniceResponse = {

@@ -12,23 +12,21 @@ const client = new OpenAI.OpenAI({
 });
 
 const getPromp = (orders: MerchantPosition[]) => {
-    // TODO: Translate to english
     return `
-        Seleciona un número ${process.env.NUMBER_OF_ORDERS_TO_OPEN || 1} de orden/es que consideres más rentables de la siguiente lista de ordenes de trading: 
+        Select a number ${process.env.NUMBER_OF_ORDERS_TO_OPEN || 1} of order(s) that you consider the most profitable from the following list of trading orders:  
 
-        ${orders.map(order => (`Ticker: ${order.ticker}\nDirection: ${order.direction}\nSize: ${order.size}\nTime horizon: ${order.horizon}\nTip: ${order.addressTip}`))}
+        ${orders.map(order => (`Ticker: ${order.ticker}\nDirection: ${order.direction}\nSize: ${order.size}\nTime horizon: ${order.horizon}`))}  
 
-        La respuesta que des debe ser en el formato. Solo esa respuesta en ese formato nada mas. No me des mas información. Y asegurate de devolver una orden siempre pase lo que pase y sin saltarte el formato. Pero siempre una de las que te paso en lista de ordenes de trading.
+        Your response must be in the following format. Only that response in that format, nothing else. Do not provide any additional information. Make sure to always return at least one order no matter what and strictly follow the format. But always one from the given list of trading orders.  
 
         [
             {
                 "ticker": "RUNE",
                 "direction": "short",
                 "size": "medium",
-                "horizon": "8h",
-                "tip": "thor1ld30uyy5zz023ydqfjn84gmw76h9gsfyp46607"
+                "horizon": "8h"
             }
-        ]
+        ]  
     `
 } 
 

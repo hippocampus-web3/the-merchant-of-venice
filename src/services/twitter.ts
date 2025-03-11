@@ -77,7 +77,7 @@ export async function parseTweetResponseToOrders(search: TwitterSearchResponse):
 
 export async function parseTweetContent(tweetContent: string): Promise<MerchantPosition> {
   const regex =
-    /Ticker:\s*\$(?<ticker>\w+)\s*Direction:\s*(?<direction>short|long)\s*Size:\s*(?<size>small|medium|large)\s*Time horizon:\s*(?<horizon>8h|16h|24h)\s*Tip:\s*(?<addressTip>\w+)/i;
+    /Ticker:\s*\$(?<ticker>\w+)\s*Direction:\s*(?<direction>short|long)\s*Size:\s*(?<size>small|medium|large)\s*Time horizon:\s*(?<horizon>8h|16h|20h)/i;
 
   const cleanedContent = tweetContent.replace('#veniceTrader', '').replace(/\s+/g, ' ').trim();
 
@@ -98,7 +98,6 @@ export async function parseTweetContent(tweetContent: string): Promise<MerchantP
     ticker,
     direction: match.groups.direction.toLowerCase() as "short" | "long",
     size: match.groups.size.toLowerCase() as "small" | "medium" | "large",
-    horizon: match.groups.horizon as "8h" | "16h" | "24h",
-    addressTip: match.groups.addressTip,
+    horizon: match.groups.horizon as "8h" | "16h" | "20h",
   };
 }
