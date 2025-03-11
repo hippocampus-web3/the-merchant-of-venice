@@ -34,11 +34,11 @@ async function merchantWork() {
   }
 }
 
-try {
-  await merchantWork()
-} catch(e) {
-  console.error(e)
-}
+// try {
+//   await merchantWork()
+// } catch(e) {
+//   console.error(e)
+// }
 
 cron.schedule("0 0 * * *", async () => {
   await merchantWork()
