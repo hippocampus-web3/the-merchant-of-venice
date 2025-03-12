@@ -7,6 +7,7 @@ const sdk = new Hyperliquid({
     enableWs: false,
     privateKey: process.env.PRIVATE_KEY,
     testnet: false,
+    walletAddress: process.env.VAULT_ADDRESS,
     vaultAddress: process.env.VAULT_ADDRESS,
 });
   
@@ -45,7 +46,7 @@ async function getCoinSize(coin: string, sizeInUsd: number) {
   return Number(assetAmounWithDecimals)
 }
 
-export async function marketOrder (coin: string, sizeInUsd: number, isBuy: boolean = true) {
+export async function marketOrder (coin: string, sizeInUsd: number, isBuy: boolean = true, horizon: string) {
   await sdk.connect();
   const coinSize = await getCoinSize(coin, sizeInUsd)
   const orderResponse = await sdk.custom.marketOpen(
@@ -56,11 +57,11 @@ export async function marketOrder (coin: string, sizeInUsd: number, isBuy: boole
   if ((orderResponse.response.data.statuses[0] as any)?.error) {
     console.error('Order error: ', (orderResponse.response.data.statuses[0] as any)?.error)
   }
-  console.info('Open market position:', orderResponse.response.data.statuses[0].filled)
+  console.info('Open market position:', orderResponse.response.data.statuses[0].filled, horizon)
   return orderResponse
 }
 
-export async function closePosition(coin: string = 'RUNE-PERP') {
+export async function closePosition(coin: string) {
   await sdk.connect();
   const response = await sdk.custom.marketClose(coin)
   console.info('Close position:', response.response.data.statuses[0].filled)

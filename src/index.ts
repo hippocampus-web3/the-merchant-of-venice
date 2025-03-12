@@ -25,7 +25,7 @@ async function merchantWork() {
     const sizePercentage = mapSizePercentage[position.size]
     const result = await getVaultUsdValue(process.env.VAULT_ADDRESS as string)
     const amountInDollars = Math.trunc(Number(result) * sizePercentage) // TODO: Minimun size for position 10
-    await marketOrder(position.ticker +  '-PERP', amountInDollars > 11 ? amountInDollars : 12, position.direction === 'long' ? true : false)
+    await marketOrder(position.ticker +  '-PERP', amountInDollars > 11 ? amountInDollars : 12, position.direction === 'long' ? true : false, position.horizon)
     // 4) Configure Timeouts to close positions depending on provided horizon
     const timeToDelay = mapHorizonMilliseconds[position.horizon]
     setTimeout(async () => {
