@@ -37,7 +37,7 @@ async function merchantWork() {
           const positionInfo = await getPositionFillByOid(oid)
           // Get PNL by position
           const pnl = Number(positionInfo?.closedPnl) || 0
-          const tipAmountInDollars = pnl > 2 ? pnl * 0.1 : 0 // Tip 10% of PNL if bigger than $1
+          const tipAmountInDollars = pnl > 2 ? pnl * 0.1 : 0 // Tip 10% of PNL if bigger than $2
           if (tipAmountInDollars > 0 && position.tip) {
             const hash = await sendTipInRune(tipAmountInDollars, position.tip)
             console.info("Sending tip to", position.tip, "with amount in dollars", tipAmountInDollars, "hash", hash);
