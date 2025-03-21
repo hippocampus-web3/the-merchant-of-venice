@@ -9,7 +9,7 @@
       "message": {
         "role": "assistant",
         "reasoning_content": null,
-        "content": "[\n    {\n        \"Ticker\": \"$ATOM\",\n        \"Dirección\": \"long\",\n        \"Tamaño\": \"large\",\n        \"Horizonte de tiempo\": \"24h\",\n        \"Tip\": \"atom1dzpxcslkjm9yp5m6hh6wpt3x2f8xvzq4yk7q6c\"\n    },\n    {\n        \"Ticker\": \"$SHIB\",\n        \"Dirección\": \"long\",\n        \"Tamaño\": \"large\",\n        \"Horizonte de tiempo\": \"24h\",\n        \"Tip\": \"shib1ksv2p7yq4djg58hrwl9x6ypztn9mch8fy83d5q\"\n    },\n    {\n        \"Ticker\": \"$NEAR\",\n        \"Dirección\": \"long\",\n        \"Tamaño\": \"large\",\n        \"Horizonte de tiempo\": \"24h\",\n        \"Tip\": \"near1ztgk4pxq8jydmvw7x5k3n9cylm5j6xr9qgpyld\"\n    }\n]",
+        "content": "[\n  {\n    \"ticker\": \"ATOM\",\n    \"direction\": \"long\",\n    \"size\": \"large\",\n    \"time horizon\": \"24h\",\n    \"tip\": \"thor1jqsdv03pp867t98d0kwe0pzl5ks6q0f9fvf3ha\"\n  },\n  {\n    \"ticker\": \"SHIB\",\n    \"direction\": \"long\",\n    \"size\": \"medium\",\n    \"time horizon\": \"8h\"\n  }\n]",
         "tool_calls": []
       },
       "logprobs": null,

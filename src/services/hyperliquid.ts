@@ -7,8 +7,8 @@ const sdk = new Hyperliquid({
     enableWs: false,
     privateKey: process.env.PRIVATE_KEY,
     testnet: false,
-    walletAddress: process.env.VAULT_ADDRESS,
-    vaultAddress: process.env.VAULT_ADDRESS,
+    walletAddress: process.env.VAULT_ADDRESS ? process.env.VAULT_ADDRESS : process.env.LEADER_ADDRESS,
+    vaultAddress: process.env.VAULT_ADDRESS ? process.env.VAULT_ADDRESS : undefined,
 });
   
 async function getCurrentMerchantPositions(address: string) {
@@ -61,11 +61,19 @@ export async function marketOrder (coin: string, sizeInUsd: number, isBuy: boole
   return orderResponse
 }
 
-export async function closePosition(coin: string) {
+export async function closePosition(coin: string): Promise<number | undefined> {
   await sdk.connect();
   const response = await sdk.custom.marketClose(coin)
   console.info('Close position:', response.response.data.statuses[0].filled)
-  return response
+  return response.response.data.statuses[0].filled?.oid
+}
+
+export async function getPositionFillByOid(oid: number) {
+  await sdk.connect();
+  const userAddress = process.env.VAULT_ADDRESS as string || process.env.LEADER_ADDRESS as string
+  const response = await sdk.info.getUserFills(userAddress)
+  const historyPositions = response.find(position => position.oid === oid)
+  return historyPositions
 }
 
 

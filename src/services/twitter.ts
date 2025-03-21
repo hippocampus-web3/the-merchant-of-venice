@@ -1,58 +1,65 @@
 import { MerchantPosition, TwitterSearchResponse } from "../types.js";
 
-// import { readFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { getAssetIndex } from "./hyperliquid.js";
 import axios from "axios";
 
-// const loadTwitterSearchResponse = async () => {
-//   const rawData = await readFile('./src/tests/twitter-response.json', 'utf-8');
-//   return JSON.parse(rawData);
-// };
+const loadTwitterSearchResponse = async () => {
+  const rawData = await readFile('./src/tests/twitter-response.json', 'utf-8');
+  return JSON.parse(rawData);
+};
 
 export async function searchTweetsByHashtag(): Promise<TwitterSearchResponse> {
-  const nowUtc = new Date();
-  const startDate = new Date(nowUtc.getTime() - 24 * 60 * 60 * 1000);
 
-  const startDateStr = startDate.toISOString();
-  const endDateStr = new Date(nowUtc.getTime() - 45000); // Twitter API need a delay for end date
-
-  const url = "https://api.twitter.com/2/tweets/search/recent";
+  if (process.env.TWITTER_API_KEY) {
+    const nowUtc = new Date();
+    const startDate = new Date(nowUtc.getTime() - 24 * 60 * 60 * 1000);
   
-  const params = {
-    start_time: startDateStr,
-    end_time: endDateStr,
-    max_results: 10,
-    query: '#veniceTrader',
-  };
-
-  const headers = {
-    Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
-    "Content-Type": "application/json",
-  };
-
-  let response = null
-
-  try {
-    response = await axios.get(url, { params, headers });
-  } catch (error: any) {
-    if (error?.response && error?.response.data && error?.response.data.detail) {
-      console.error("Twitter API Error:", error?.response.data.detail);
+    const startDateStr = startDate.toISOString();
+    const endDateStr = new Date(nowUtc.getTime() - 45000); // Twitter API need a delay for end date
+  
+    const url = "https://api.twitter.com/2/tweets/search/recent";
+    
+    const params = {
+      start_time: startDateStr,
+      end_time: endDateStr,
+      max_results: 10,
+      query: '#veniceTrader',
+    };
+  
+    const headers = {
+      Authorization: `Bearer ${process.env.TWITTER_API_KEY}`,
+      "Content-Type": "application/json",
+    };
+  
+    let response = null
+  
+    try {
+      response = await axios.get(url, { params, headers });
+    } catch (error: any) {
+      if (error?.response && error?.response.data && error?.response.data.detail) {
+        console.error("Twitter API Error:", error?.response.data.detail);
+      }
+      if (error?.response && error?.response.data && error?.response.data.errors) {
+        console.error("Twitter API Error:", JSON.stringify(error?.response.data.errors, null, 2));
+      }
+      throw new Error('Error fetching tweets')
     }
-    if (error?.response && error?.response.data && error?.response.data.errors) {
-      console.error("Twitter API Error:", JSON.stringify(error?.response.data.errors, null, 2));
+  
+    const tweetResponse: TwitterSearchResponse = response.data;
+  
+    console.log('response', response.data)
+  
+    if (tweetResponse.meta.result_count <= 0) {
+      throw new Error('No tweets found in last 24h')
     }
-    throw new Error('Error fetching tweets')
+  
+    return tweetResponse;
+  } else {
+    console.warn('TWITTER_API_KEY not set, skipping search and working with mock data')
+    const mockTweets = await loadTwitterSearchResponse()
+    return mockTweets
   }
-
-  const tweetResponse: TwitterSearchResponse = response.data;
-
-  console.log('response', response.data)
-
-  if (tweetResponse.meta.result_count <= 0) {
-    throw new Error('No tweets found in last 24h')
-  }
-
-  return tweetResponse;
 }
 
 //   const twitterFakeResponse = await loadTwitterSearchResponse() // TODO: Implement real search
@@ -77,7 +84,7 @@ export async function parseTweetResponseToOrders(search: TwitterSearchResponse):
 
 export async function parseTweetContent(tweetContent: string): Promise<MerchantPosition> {
   const regex =
-    /Ticker:\s*\$(?<ticker>\w+)\s*Direction:\s*(?<direction>short|long)\s*Size:\s*(?<size>small|medium|large)\s*Time horizon:\s*(?<horizon>8h|16h|20h)/i;
+    /Ticker:\s*\$(?<ticker>\w+)\s*Direction:\s*(?<direction>short|long)\s*Size:\s*(?<size>small|medium|large)\s*Time horizon:\s*(?<horizon>8h|16h|20h)(?:\s*Tip:\s*(?<tip>thor\w+))?/i
 
   const cleanedContent = tweetContent.replace('#veniceTrader', '').replace(/\s+/g, ' ').trim();
 
@@ -99,5 +106,6 @@ export async function parseTweetContent(tweetContent: string): Promise<MerchantP
     direction: match.groups.direction.toLowerCase() as "short" | "long",
     size: match.groups.size.toLowerCase() as "small" | "medium" | "large",
     horizon: match.groups.horizon as "8h" | "16h" | "20h",
+    tip: match.groups.tip,
   };
 }

@@ -1,7 +1,7 @@
 export const mapHorizonMilliseconds = {
-    '8h': 8 * 60 * 60 * 1000,
-    '16h': 16 * 60 * 60 * 1000,
-    '20h': 20 * 60 * 60 * 1000,
+    '8h': Number(process.env.EIGHT_HOURS_IN_MILLISECONDS) || 28800000,
+    '16h': Number(process.env.SIXTEEN_HOURS_IN_MILLISECONDS) || 57600000,
+    '20h': Number(process.env.TWENTY_HOURS_IN_MILLISECONDS) || 72000000,
 }
 
 export const mapSizePercentage = {

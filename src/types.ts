@@ -9,6 +9,7 @@ export type MerchantPosition = {
   direction: "short" | "long";
   size: "small" | "medium" | "large";
   horizon: "8h" | "16h" | "20h";
+  tip?: string;
 };
 
 export type VeniceResponse = {
