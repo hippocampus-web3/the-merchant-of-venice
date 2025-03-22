@@ -73,6 +73,7 @@ export async function getPositionFillByOid(oid: number) {
   const userAddress = process.env.VAULT_ADDRESS as string || process.env.LEADER_ADDRESS as string
   const response = await sdk.info.getUserFills(userAddress)
   const historyPositions = response.find(position => position.oid === oid)
+  console.debug('[getPositionFillByOid] Position info:', historyPositions)
   return historyPositions
 }
 

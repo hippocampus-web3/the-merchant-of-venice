@@ -42,6 +42,8 @@ async function merchantWork() {
             const hash = await sendTipInRune(tipAmountInDollars, position.tip)
             console.info("Sending tip to", position.tip, "with amount in dollars", tipAmountInDollars, "hash", hash);
           }
+        } else {
+          console.warn('Not oid returned from close position')
         }
       } catch(e) {
         console.error('Error closing position or sending tip', e)
