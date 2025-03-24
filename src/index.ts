@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { getOrdersFromTwitterLast24hWithHastagh } from "./controllers/twitter.controller.js";
+import { getOrdersFromTwitterLast24hWithHastagh, publishTradePosition } from "./controllers/twitter.controller.js";
 import cron from "node-cron";
 import { getSuggestedPositionsBasedOnVeniceOutput } from "./controllers/venice.controller.js";
 import { closePosition, getPositionFillByOid, getVaultUsdValue, marketOrder } from "./services/hyperliquid.js";
@@ -27,6 +27,7 @@ async function merchantWork() {
     const result = await getVaultUsdValue(process.env.VAULT_ADDRESS as string || process.env.LEADER_ADDRESS as string)
     const amountInDollars = Math.trunc(Number(result) * sizePercentage) // TODO: Minimun size for position 10
     await marketOrder(position.ticker +  '-PERP', amountInDollars > 11 ? amountInDollars : 12, position.direction === 'long' ? true : false, position.horizon)
+    await publishTradePosition(position)
     // 4) Configure Timeouts to close positions depending on provided horizon
     const timeToDelay = mapHorizonMilliseconds[position.horizon]
     setTimeout(async () => {
@@ -41,6 +42,8 @@ async function merchantWork() {
           if (tipAmountInDollars > 0 && position.tip) {
             const hash = await sendTipInRune(tipAmountInDollars, position.tip)
             console.info("Sending tip to", position.tip, "with amount in dollars", tipAmountInDollars, "hash", hash);
+          } else {
+            console.warn('tipAmountInDollars less than 0 or tip not provided', tipAmountInDollars, position)
           }
         } else {
           console.warn('Not oid returned from close position')
