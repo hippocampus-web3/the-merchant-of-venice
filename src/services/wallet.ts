@@ -18,6 +18,8 @@ export async function sendTipInRune(
     phrase: process.env.RUNE_VAULT_MAINNET_PHRASE,
   })
 
+  console.debug(`Sending tip to ${address} with amount in RUNE ${amountInRune}`);
+
   const hash = await thorchainClient.transfer({
     recipient: address,
     amount: assetToBase(assetAmount(Number(amountInRune), 8)),
