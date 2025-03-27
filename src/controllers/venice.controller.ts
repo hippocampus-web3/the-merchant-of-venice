@@ -1,4 +1,3 @@
-import { parse } from "path";
 import { getSugestionsUsingVenice, parseVeniceResponse } from "../services/venice.js";
 import { MerchantPosition } from "../types.js";
 
