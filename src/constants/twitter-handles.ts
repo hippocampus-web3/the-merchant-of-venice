@@ -1,0 +1,21 @@
+export const twitterHandles: Record<string, string> = {
+    'BTC': '@bitcoin',
+    'ETH': '@ethereum',
+    'SOL': '@solana',
+    'RUNE': '@THORChain',
+    'BNB': '@BNBCHAIN',
+    'AVAX': '@avalancheavax',
+    'ATOM': '@cosmos',
+    'FTM': '@FantomFDN',
+    'MATIC': '@0xPolygon',
+    'DOT': '@Polkadot',
+    'LTC': '@litecoin',
+    'DOGE': '@dogecoin',
+    'SHIB': '@Shibtoken',
+    'UNI': '@Uniswap',
+    'AAVE': '@AaveAave',
+    'XRP': '@Ripple',
+    'ADA': '@Cardano',
+    'LINK': '@chainlink',
+    'NEAR': '@NEARProtocol'
+}; 

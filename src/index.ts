@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-import { getOrdersFromTwitterLast24hWithHastagh, publishTradePosition } from "./controllers/twitter.controller.js";
+import { getOrdersFromTwitterLast24hWithHastagh, publishTradePosition, publishClosedPosition } from "./controllers/twitter.controller.js";
 import cron from "node-cron";
 import { getSuggestedPositionsBasedOnVeniceOutput } from "./controllers/venice.controller.js";
 import { closePosition, getPositionFillByOid, getVaultUsdValue, marketOrder } from "./services/hyperliquid.js";
-import { mapHorizonMilliseconds, mapSizePercentage } from "./constants.js";
+import { mapHorizonMilliseconds, mapSizePercentage } from "./constants/constants.js";
 import { sendTipInRune } from "./services/wallet.js";
 
 dotenv.config();
@@ -27,7 +27,7 @@ async function merchantWork() {
     const result = await getVaultUsdValue(process.env.VAULT_ADDRESS as string || process.env.LEADER_ADDRESS as string)
     const amountInDollars = Math.trunc(Number(result) * sizePercentage) // TODO: Minimun size for position 10
     await marketOrder(position.ticker +  '-PERP', amountInDollars > 11 ? amountInDollars : 12, position.direction === 'long' ? true : false, position.horizon)
-    await publishTradePosition(position)
+    await publishTradePosition(position, amountInDollars)
     // 4) Configure Timeouts to close positions depending on provided horizon
     const timeToDelay = mapHorizonMilliseconds[position.horizon]
     setTimeout(async () => {
@@ -45,6 +45,9 @@ async function merchantWork() {
           } else {
             console.warn('tipAmountInDollars less than 0 or tip not provided', tipAmountInDollars, position)
           }
+          
+          // Publish closed position tweet
+          await publishClosedPosition(position, pnl, tipAmountInDollars)
         } else {
           console.warn('Not oid returned from close position')
         }
