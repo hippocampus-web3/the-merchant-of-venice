@@ -72,9 +72,19 @@ export async function getPositionFillByOid(oid: number) {
   await sdk.connect();
   const userAddress = process.env.VAULT_ADDRESS as string || process.env.LEADER_ADDRESS as string
   const response = await sdk.info.getUserFills(userAddress)
-  const historyPositions = response.find(position => position.oid === oid)
-  console.debug('[getPositionFillByOid] Position info:', historyPositions)
-  return historyPositions
+  const historyPositions = response.filter(position => position.oid === oid)
+  const accumPosition = historyPositions.reduce((acc, position) => {
+    const accSize = acc?.sz ? Number(acc?.sz) : 0
+    const closedPnl = acc?.closedPnl ? Number(acc?.closedPnl) : 0
+    return {
+      ...acc,
+      ...position,
+      sz: String(accSize + Number(position.sz)),
+      closedPnl: String(closedPnl + Number(position.closedPnl)),
+    }
+  }, {} as any)
+  console.debug('[getPositionFillByOid] Accumulated position info:', accumPosition)
+  return accumPosition
 }
 
 

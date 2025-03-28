@@ -59,7 +59,8 @@ async function merchantWork() {
 }
 
 // try {
-//   await merchantWork()
+//   const result = await getPositionFillByOid(82268698062)
+//   console.log('result', result)
 // } catch(e) {
 //   console.error(e)
 // }
