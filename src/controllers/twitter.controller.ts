@@ -62,7 +62,7 @@ export async function publishTradePosition(position: MerchantPosition, sizeInDol
     }
     
     // Add timestamp and hash tags
-    tweetContent += `\n⏰ Signal time: ${timeString}\n\n`;
+    // tweetContent += `\n⏰ Signal time: ${timeString}\n\n`;
     
     // Publish the tweet
     return await publishTweet(tweetContent);
@@ -115,7 +115,7 @@ export async function publishClosedPosition(position: MerchantPosition, pnl: num
     }
     
     // Add timestamp
-    tweetContent += `\n⏰ Closed at: ${timeString}\n\n`;
+    // tweetContent += `\n⏰ Closed at: ${timeString}\n\n`;
     
     // Publish the tweet
     return await publishTweet(tweetContent);
