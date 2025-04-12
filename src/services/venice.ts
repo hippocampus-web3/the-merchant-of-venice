@@ -45,6 +45,7 @@ export async function getSugestionsUsingVenice(orders: MerchantPosition[]): Prom
                 messages: [{ role: 'user', content: promp }],
                 model: 'llama-3.3-70b',
             });
+            console.debug('Venice response', chatCompletion)
             return chatCompletion as VeniceResponse
         } catch(e) {
             console.error(e)
@@ -60,5 +61,6 @@ export async function getSugestionsUsingVenice(orders: MerchantPosition[]): Prom
 export function parseVeniceResponse (response: VeniceResponse): MerchantPosition[] {
     const text = response.choices[0].message.content
     const proposedOrders: MerchantPosition[] = JSON.parse(text)
+    console.debug('proposedOrders', proposedOrders)
     return proposedOrders
 }
