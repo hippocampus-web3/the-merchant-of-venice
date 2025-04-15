@@ -23,7 +23,7 @@ const getPromp = (orders: MerchantPosition[]) => {
 
         ${orders.map(order => (`Ticker: ${order.ticker}\nDirection: ${order.direction}\nSize: ${order.size}\nTime horizon: ${order.horizon}\nTip: ${order?.tip}`))}  
 
-        Your response must be in the following format. Only that response in that format, nothing else. Do not provide any additional information. Make sure to always return at least one order no matter what and strictly follow the format. But always one from the given list of trading orders. Tip is an optional field. If there is no value for it, ignore it. Do not choose two positions for the same asset.  
+        Your response must be in the following format. Only that response in that format, nothing else. Do not provide any additional information. Make sure to always return at least one order no matter what and strictly follow the format. But always one from the given list of trading orders. Tip is an optional field. If there is no value for it, ignore it. Do not choose two positions for the same asset. Remember add tip parameter  
 
         [
             {
@@ -41,11 +41,12 @@ export async function getSugestionsUsingVenice(orders: MerchantPosition[]): Prom
     if (process.env.VENICE_API_KEY) {
         try {
             const promp = getPromp(orders)
+            console.debug('promp', promp)
             const chatCompletion = await client.chat.completions.create({
                 messages: [{ role: 'user', content: promp }],
                 model: 'llama-3.3-70b',
             });
-            console.debug('Venice response', chatCompletion)
+            console.debug('Venice response', chatCompletion?.choices[0]?.message)
             return chatCompletion as VeniceResponse
         } catch(e) {
             console.error(e)
