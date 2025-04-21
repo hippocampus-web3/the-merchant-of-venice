@@ -23,7 +23,7 @@ export async function getVaultUsdValue (address: string) {
 
 export async function getAssetIndex(asset: string) {
   await sdk.connect();
-  const index = await sdk.info.getAssetIndex(asset)
+  const index = await sdk.info.getAssetIndex(asset.toUpperCase())
   return index
 }
 
